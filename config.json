@@ -1,0 +1,4 @@
+{
+    "smtp_server": "email-smtp.us-east-1.amazonaws.com",
+    "smtp_port": 587
+}
