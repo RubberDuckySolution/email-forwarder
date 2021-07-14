@@ -1,15 +1,11 @@
-from email.message import EmailMessage
-from email.mime import text
-import pprint as pp
 import smtplib
 import json
 import os
 
 from email.parser import Parser
 from email.policy import default
-from copy import deepcopy
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+
 
 class EmailHandler:
     def __init__(self, email_content):
@@ -32,20 +28,10 @@ class EmailHandler:
         # Send from the address it was sent to
         new_mail['From'] = sent_to
 
-        html_part = None
-        text_part = None
-        payloads = email.get_payload()
-        for payload in payloads:
-            if payload.get_content_type() == 'text/html':
-                html_part = MIMEText(payload.get_content())
-            if payload.get_content_type() == 'text/plain':
-                text_part = MIMEText(payload.get_content())
-
-        if text_part:
-            new_mail.attach(text_part)
-        if html_part:
-            new_mail.attach(html_part)
-
+        # attach all email payloads to the new message
+        for payload in email.get_payload():
+            new_mail.attach(payload)
+        
         return new_mail
 
     def get_config(self):
@@ -81,6 +67,3 @@ class EmailHandler:
         print(f'To - {new_email["To"]}')
         print(f'Date - {new_email["Date"]}')
         print(f'Subject - {new_email["Subject"]}')
-        # payloads = new_email.get_payload()
-        # for payload in payloads:
-        #     print(payload.get_content())
